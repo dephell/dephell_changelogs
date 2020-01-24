@@ -6,10 +6,21 @@ from dephell_changelogs._finder import get_changelog_url
 
 
 @pytest.mark.parametrize('given, expected', [
+    # test different resources for one project
     (
         'dephell',
         'https://raw.githubusercontent.com/dephell/dephell/master/docs/changelog.md',
     ),
+    (
+        'https://dephell.readthedocs.io/',
+        'https://raw.githubusercontent.com/dephell/dephell/master/docs/changelog.md',
+    ),
+    (
+        'https://github.com/dephell/dephell/',
+        'https://raw.githubusercontent.com/dephell/dephell/master/docs/changelog.md',
+    ),
+
+    # test different projects
     (
         'pip',
         'https://raw.githubusercontent.com/pypa/pip/master/NEWS.rst',
@@ -37,6 +48,10 @@ from dephell_changelogs._finder import get_changelog_url
     (
         'websocket-client',
         'https://raw.githubusercontent.com/websocket-client/websocket-client/master/ChangeLog',
+    ),
+    (
+        'attrs',
+        'https://raw.githubusercontent.com/python-attrs/attrs/master/CHANGELOG.rst',
     ),
 ])
 def test_get_changelog_url(given: str, expected: str):
