@@ -1,8 +1,10 @@
+from textwrap import dedent
+
 # external
 import pytest
 
 # project
-from dephell_changelogs._parser import _get_version
+from dephell_changelogs._parser import _get_version, parse_changelog
 
 
 @pytest.mark.parametrize('given, expected', [
@@ -26,3 +28,21 @@ from dephell_changelogs._parser import _get_version
 ])
 def test_get_version(given: str, expected: str):
     assert _get_version(given) == expected
+
+
+def test_parse_changelog():
+    given = dedent("""
+        # v.2.3.1
+
+        - do this
+        - do that
+
+        # v.2.3.0
+
+        - do something
+    """)
+    expected = {
+        '2.3.1': '- do this\n- do that',
+        '2.3.0': '- do something',
+    }
+    assert parse_changelog(given) == expected

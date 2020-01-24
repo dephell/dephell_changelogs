@@ -65,12 +65,16 @@ def parse_changelog(content: str) -> Dict[str, str]:
 
         # save old section and start new one
         if notes:
-            changelog[version] = '\n'.join(notes)
+            text = '\n'.join(notes).strip('\n')
+            if text:
+                changelog[version] = text
         version = new_version
         notes = []
         continue
 
     if notes:
-        changelog[version] = '\n'.join(notes)
+        text = '\n'.join(notes).strip('\n')
+        if text:
+            changelog[version] = text
 
     return changelog

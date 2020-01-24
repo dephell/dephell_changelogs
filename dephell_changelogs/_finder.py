@@ -13,6 +13,7 @@ CHANGELOG_NAMES = (
     'release',
     'releases',
     'whatsnew',
+    'ChangeLog'
 )
 
 DOCS_NAMES = (
@@ -54,7 +55,7 @@ KNOWN_CHANGELOGS = {
     'pyinvoke': 'https://raw.githubusercontent.com/pyinvoke/invoke/master/sites/www/changelog.rst',
     'pytest': 'https://raw.githubusercontent.com/pytest-dev/pytest/master/doc/en/changelog.rst',
     'python-ldap': 'https://raw.githubusercontent.com/python-ldap/python-ldap/python-ldap-3.2.0/CHANGES',
-    'python-memcached': 'https://raw.githubusercontent.com/linsomniac/python-memcached/master/ChangeLog',
+    # 'python-memcached': 'https://raw.githubusercontent.com/linsomniac/python-memcached/master/ChangeLog',
     'pytz': 'https://raw.githubusercontent.com/stub42/pytz/master/tz/NEWS',
     'selenium': 'https://raw.githubusercontent.com/SeleniumHQ/selenium/master/py/CHANGES',
     'websocket-client': 'https://raw.githubusercontent.com/websocket-client/websocket-client/master/ChangeLog',  # noqa: E501
@@ -96,12 +97,16 @@ def _known_domain(hostname: str) -> bool:
         return True
     if hostname == 'pypi.org':
         return True
+    if hostname.endswith(('.readthedocs.io', '.readthedocs.org', '.rtfd.io')):
+        return True
     return False
 
 
 def _get_changelog_github(parsed: ParseResult) -> Optional[str]:
     # make URLs
     author, project, *_ = parsed.path.lstrip('/').split('/')
+    if project in KNOWN_CHANGELOGS:
+        return KNOWN_CHANGELOGS[project]
     tmpl = 'https://raw.githubusercontent.com/{}/{}/master/'
     raw_url = tmpl.format(author, project)
     tmpl = 'https://github.com/{}/{}/tree/master/'
@@ -137,6 +142,28 @@ def _get_changelog_pypi(parsed: ParseResult) -> Optional[str]:
     return KNOWN_CHANGELOGS.get(project_name)
 
 
+def _get_changelog_rtfd(parsed: ParseResult) -> Optional[str]:
+    project_name = parsed.hostname.split('.', maxsplit=1)[0]
+    if project_name in KNOWN_CHANGELOGS:
+        return KNOWN_CHANGELOGS[project_name]
+    response = requests.get(
+        url='https://readthedocs.org/api/v2/project/',
+        params=dict(slug=project_name),
+    )
+    if not response.ok:
+        return None
+    repo = response.json().get('repo')
+    if not repo:
+        return None
+
+    repo = repo.replace('git://', 'https://')
+    if repo.endswith('.git'):
+        repo = repo[:-4]
+    parsed = urlparse(repo)
+    if parsed.hostname == 'github.com':
+        return _get_changelog_github(parsed)
+
+
 def get_changelog_url(base_url: str) -> Optional[str]:
     # fast checks for URL
     parsed = urlparse(base_url)
@@ -158,4 +185,6 @@ def get_changelog_url(base_url: str) -> Optional[str]:
         return _get_changelog_github(parsed)
     if hostname == 'pypi.org':
         return _get_changelog_pypi(parsed)
+    if hostname.endswith(('.readthedocs.io', '.readthedocs.org', '.rtfd.io')):
+        return _get_changelog_rtfd(parsed)
     return None
