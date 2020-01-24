@@ -5,37 +5,43 @@ from typing import Dict, Optional
 
 rex_version = re.compile(r'[0-9]+\.[0-9]+\.[0-9]+')
 
+_VERSION_REX = r'(?:[vV]\.?)?([0-9\.]+)'
+rexes = (
+    # `Version 1.2.3 ...`
+    re.compile(r'(?:Version|Release) {}.*'.format(_VERSION_REX)),
+    # `## 2.3.4 ...`
+    re.compile(r'(?:\#|\=)+ {}.*'.format(_VERSION_REX)),
+    # `v.2.3.4`
+    re.compile(_VERSION_REX),
+    # `v.2.3.4 (2019-01-02)`
+    re.compile(r'{} \([0-9-]+\)'.format(_VERSION_REX)),
+    # `* 1.2.3`
+    re.compile(r'[\+\-\*] {}'.format(_VERSION_REX)),
+    # `...:release:`1.11.0 <2018-03-19>`...`
+    re.compile(r'.*\:release\:\`{}.*'.format(_VERSION_REX)),
+    # `What's new in psycopg 2.8.4`
+    re.compile(r'What\'s new in.* {}'.format(_VERSION_REX)),
+    # `= 2.0.1 ...`
+    re.compile(r'= {} .*'.format(_VERSION_REX)),
+)
+
 
 def _get_version(line: str) -> Optional[str]:
     line = line.strip()
-    if not (3 <= len(line) < 40):
+    if not (3 <= len(line) < 60):
         return None
 
-    if ':release:`' in line:
-        return line.split(':release:`')[1].split()[0]
+    for rex in rexes:
+        match = rex.fullmatch(line)
+        if match:
+            return match.groups()[-1]
 
-    if line.startswith(('Version ', 'Release ', ':version:', '.. scm-version-title:: ')):
-        version = line.lstrip('. ').split()[1].lstrip('Vv.')
-        if version[0].isdigit():
-            return version
+    if line.startswith('.. scm-version-title:: '):
+        return line.lstrip('. ').split()[1].lstrip('v. ')
 
-    match = rex_version.fullmatch(line.strip('#=*-v '))
-    if match:
-        return match.group(0)
-
-    line = line.lstrip('# =')
-    if not line:
-        return None
-    if not (line[0].isdigit() or line[0].isalpha()):
-        return None
-
-    match = rex_version.search(line)
-    if match:
-        return match.group(0)
-
-    version = line.lstrip('Vv. ')
-    if version[0].isdigit():
-        return version.split()[0]
+    words = line.split()
+    if len(words) == 2 and rex_version.fullmatch(words[1]):
+        return words[1]
 
     return None
 
