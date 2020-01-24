@@ -141,7 +141,21 @@ def _get_changelog_github(parsed: ParseResult) -> Optional[str]:
 def _get_changelog_pypi(parsed: ParseResult) -> Optional[str]:
     project_name = parsed.path.strip('/').split('/')[1]
     project_name = project_name.lower().replace('_', '-')
-    return KNOWN_CHANGELOGS.get(project_name)
+    if project_name in KNOWN_CHANGELOGS:
+        return KNOWN_CHANGELOGS[project_name]
+
+    url = 'https://pypi.org/pypi/{}/json'.format(project_name)
+    response = requests.get(url=url)
+    if not response.ok:
+        return None
+    urls = response.json()['info'].get('project_urls')
+    for url in (urls or {}).values():
+        if 'pypi.org/' in url:
+            continue
+        url = get_changelog_url(url)
+        if url:
+            return url
+    return None
 
 
 def _get_changelog_rtfd(parsed: ParseResult) -> Optional[str]:
