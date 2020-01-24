@@ -23,16 +23,20 @@ from dephell_changelogs._finder import get_changelog_url
         'https://raw.githubusercontent.com/sqlalchemy/sqlalchemy/master/CHANGES',
     ),
     (
-        'https://pypi.org/project/websocket_client/',
-        'https://raw.githubusercontent.com/websocket-client/websocket-client/master/ChangeLog',
-    ),
-    (
         'https://pypi.org/project/django-hijack/',
         'https://raw.githubusercontent.com/arteria/django-hijack/master/CHANGELOG.txt',
     ),
     (
         'https://github.com/linsomniac/python-memcached',
         'https://raw.githubusercontent.com/linsomniac/python-memcached/master/ChangeLog',
+    ),
+    (
+        'https://alabaster.readthedocs.io',
+        'https://raw.githubusercontent.com/bitprophet/alabaster/master/docs/changelog.rst',
+    ),
+    (
+        'https://github.com/websocket-client/websocket-client.git',
+        'https://raw.githubusercontent.com/websocket-client/websocket-client/master/ChangeLog',
     ),
 ])
 def test_get_changelog_url(given: str, expected: str):
