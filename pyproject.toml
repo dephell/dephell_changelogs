@@ -9,6 +9,11 @@ envs = ["main", "dev"]
 tests = ["tests"]
 command = "python -m pytest -n 4 tests/"
 
+[tool.dephell.typing]
+from = {format = "flit", path = "pyproject.toml"}
+envs = ["main", "dev"]
+command = "mypy --ignore-missing-imports --allow-redefinition dephell_changelogs"
+
 
 [tool.flit.metadata]
 module="dephell_changelogs"

@@ -159,6 +159,8 @@ def _get_changelog_pypi(parsed: ParseResult) -> Optional[str]:
 
 
 def _get_changelog_rtfd(parsed: ParseResult) -> Optional[str]:
+    if parsed.hostname is None:
+        return None
     project_name = parsed.hostname.split('.', maxsplit=1)[0]
     if project_name in KNOWN_CHANGELOGS:
         return KNOWN_CHANGELOGS[project_name]
@@ -186,6 +188,8 @@ def get_changelog_url(base_url: str) -> Optional[str]:
 
     # fast checks for URL
     parsed = urlparse(base_url)
+    if parsed.hostname is None:
+        return None
     if not _known_domain(parsed.hostname):
         return None
     response = requests.head(base_url)
@@ -196,6 +200,8 @@ def get_changelog_url(base_url: str) -> Optional[str]:
     # get hostname
     parsed = urlparse(base_url)
     hostname = parsed.hostname
+    if hostname is None:
+        return None
     if hostname.startswith('www.'):
         hostname = hostname[4:]
 

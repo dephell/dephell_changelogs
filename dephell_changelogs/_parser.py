@@ -1,6 +1,6 @@
 # built-in
 import re
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 # external
 import requests
@@ -55,9 +55,9 @@ def parse_changelog(content: str) -> Dict[str, str]:
         response.raise_for_status()
         content = response.text
 
-    changelog = dict()
-    version = None
-    notes = []
+    changelog = dict()  # type: Dict[str, str]
+    version = 'unknown'
+    notes = []  # type: List[str]
     for line in content.splitlines():
         # drop rst-like header from the section beginning
         if not notes:

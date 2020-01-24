@@ -3,3 +3,4 @@ setup.py
 README.rst
 .pytest_cache/
 *.egg-info
+.mypy_cache/
