@@ -2,6 +2,9 @@
 import re
 from typing import Dict, Optional
 
+# external
+import requests
+
 
 rex_version = re.compile(r'[0-9]+\.[0-9]+\.[0-9]+')
 
@@ -47,8 +50,12 @@ def _get_version(line: str) -> Optional[str]:
 
 
 def parse_changelog(content: str) -> Dict[str, str]:
-    changelog = dict()
+    if content.startswith('https://') and len(content.split()) == 1:
+        response = requests.get(url=content)
+        response.raise_for_status()
+        content = response.text
 
+    changelog = dict()
     version = None
     notes = []
     for line in content.splitlines():
