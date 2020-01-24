@@ -1,0 +1,45 @@
+[tool.dephell.main]
+from = {format = "flit", path = "pyproject.toml"}
+to = {format = "setuppy", path = "setup.py"}
+envs = ["main", "dev"]
+
+[tool.dephell.pytest]
+from = {format = "flit", path = "pyproject.toml"}
+envs = ["main", "dev"]
+tests = ["tests"]
+command = "python -m pytest -n 4 tests/"
+
+
+[tool.flit.metadata]
+module="flakehell"
+author="Gram (@orsinium)"
+author-email="master_fess@mail.ru"
+home-page="https://github.com/life4/flakehell"
+requires-python=">=3.5"
+requires=[
+    "requests",
+]
+description-file="README.md"
+classifiers=[
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Framework :: Flake8",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Quality Assurance",
+]
+
+[tool.flit.metadata.urls]
+Documentation = "https://flakehell.readthedocs.io/"
+
+[tool.flit.metadata.requires-extra]
+dev = [
+    "pytest",
+    "pytest-xdist",
+]
