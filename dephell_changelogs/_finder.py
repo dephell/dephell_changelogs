@@ -13,7 +13,7 @@ CHANGELOG_NAMES = (
     'release',
     'releases',
     'whatsnew',
-    'ChangeLog'
+    'ChangeLog',
 )
 
 DOCS_NAMES = (

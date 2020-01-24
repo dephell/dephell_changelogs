@@ -9,6 +9,11 @@ envs = ["main", "dev"]
 tests = ["tests"]
 command = "python -m pytest -n 4 tests/"
 
+[tool.dephell.flake8]
+from = {format = "pip", path = "requirements-flake.txt"}
+python = ">=3.6"
+command = "flake8"
+
 [tool.dephell.typing]
 from = {format = "flit", path = "pyproject.toml"}
 envs = ["main", "dev"]
