@@ -18,6 +18,8 @@ from dephell_changelogs._parser import _get_version, parse_changelog
     ('2.2.2 (2019-12-26)',          '2.2.2'),   # dynaconf
     ('20.0.1 (2020-01-21)',         '20.0.1'),  # pip
     ('0.2',                         '0.2'),     # pip
+    ('1.0.0b3',                    '1.0.0b3'),  # pytest
+    ('pytest 5.3.3 (2020-01-16)',   '5.3.3'),   # pytest
     ('* 2.2.1',                     '2.2.1'),   # pyyaml
     ('- v0.5.1',                    '0.5.1'),   # websocket-client
 
