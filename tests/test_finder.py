@@ -31,7 +31,7 @@ from dephell_changelogs._finder import get_changelog_url
     ),
     (
         'sqlalchemy',
-        'https://raw.githubusercontent.com/sqlalchemy/sqlalchemy/master/CHANGES',
+        'https://raw.githubusercontent.com/sqlalchemy/sqlalchemy/master/CHANGES.rst',
     ),
     (
         'django-hijack',
