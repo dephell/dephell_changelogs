@@ -8,7 +8,7 @@ import requests
 
 rex_version = re.compile(r'[0-9]+\.[0-9]+\.[0-9]+')
 
-_VERSION_REX = r'(?:[vV]\.?)?([0-9\.]+)'
+_VERSION_REX = r'(?:[vV]\.?)?([0-9\.]+(?:[ab][0-9])?)'
 rexes = (
     # `Version 1.2.3 ...`
     re.compile(r'(?:Version|Release) {}.*'.format(_VERSION_REX)),
@@ -16,8 +16,8 @@ rexes = (
     re.compile(r'(?:\#|\=)+ {}.*'.format(_VERSION_REX)),
     # `v.2.3.4`
     re.compile(_VERSION_REX),
-    # `v.2.3.4 (2019-01-02)`
-    re.compile(r'{} \([0-9-]+\)'.format(_VERSION_REX)),
+    # `v.2.3.4 (2019-01-02)` and `project-name v.2.3.4 (2019-01-02)`
+    re.compile(r'(?:[A-Za-z-]+ )?{} \([0-9-]+\)'.format(_VERSION_REX)),
     # `* 1.2.3`
     re.compile(r'[\+\-\*] {}'.format(_VERSION_REX)),
     # `...:release:`1.11.0 <2018-03-19>`...`
